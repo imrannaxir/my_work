@@ -1,3 +1,5 @@
+import 'dart:js';
+
 import 'package:flutter/material.dart';
 import 'error_screen.dart';
 import 'first_screen.dart';
@@ -14,21 +16,61 @@ class Routes {
           return const FirstScreen();
         });
       case RouteNames.secondScreen:
-        return MaterialPageRoute(builder: (BuildContext context) {
-          return SecondScreen(
+        return ScaleFadeTransition(
+          page: SecondScreen(
             data: settings.arguments as Map,
-          );
-        });
+          ),
+        );
+      // return MaterialPageRoute(builder: (BuildContext context) {
+      //   return SecondScreen(
+      //     data: settings.arguments as Map,
+      //   );
+      // });
       case RouteNames.thirdScreen:
-        return MaterialPageRoute(builder: (BuildContext context) {
-          return ThirdScreen(
+        return ScaleFadeTransition(
+          page: ThirdScreen(
             data: settings.arguments as Map,
-          );
-        });
+          ),
+        );
+      // return MaterialPageRoute(builder: (BuildContext context) {
+      //   return ThirdScreen(
+      //     data: settings.arguments as Map,
+      //   );
+      // });
       default:
-        return MaterialPageRoute(builder: (BuildContext context) {
-          return ErrorScreen(data: settings.arguments as Map);
-        });
+        return ScaleFadeTransition(
+          page: ErrorScreen(
+            data: settings.arguments as Map,
+          ),
+        );
+      // return MaterialPageRoute(builder: (BuildContext context) {
+      //   return ErrorScreen(data: settings.arguments as Map);
+      // });
     }
   }
+}
+
+class ScaleFadeTransition extends PageRouteBuilder {
+  ScaleFadeTransition({required this.page, RouteSettings? settings})
+      : super(
+          pageBuilder: (context, animation, reverseAnimation) => page,
+          transitionDuration: const Duration(seconds: 2),
+          reverseTransitionDuration: const Duration(seconds: 2),
+          settings: settings,
+          transitionsBuilder: (
+            context,
+            animation,
+            reverseAnimation,
+            Widget child,
+          ) =>
+              FadeTransition(
+            opacity: animation,
+            child: ScaleTransition(
+              scale:
+                  CurvedAnimation(parent: animation, curve: Curves.bounceInOut),
+              child: child,
+            ),
+          ),
+        );
+  final Widget page;
 }
